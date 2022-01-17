@@ -74,6 +74,7 @@ plugins=(
     git
     zsh-autosuggestions
     vi-mode
+    zsh-nvm
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -108,4 +109,4 @@ MODE_INDICATOR="%F{yellow}+%f"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-source /Users/mgarcia/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
