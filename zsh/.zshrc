@@ -75,6 +75,7 @@ plugins=(
     zsh-autosuggestions
     vi-mode
     zsh-nvm
+    zsh-syntax-highlighting
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -109,4 +110,7 @@ MODE_INDICATOR="%F{yellow}+%f"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-source ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+alias av="ansible-vault"
+alias max="cd ~/work/baml/baml-mobile-advisory"
+alias sr="omz reload"
+#source ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
