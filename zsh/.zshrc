@@ -108,9 +108,12 @@ MODE_INDICATOR="%F{yellow}+%f"
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
-# alias zshconfig="mate ~/.zshrc"
+alias zshconfig="vim ~/.zshrc"
+alias zconf="vim ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias av="ansible-vault"
+alias work="cd ~/work"
 alias max="cd ~/work/baml/baml-mobile-advisory"
 alias sr="omz reload"
+
 #source ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
