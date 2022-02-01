@@ -1,5 +1,5 @@
 
-# tabtab source for serverless package
+# tabtab source for serverless package a
 # uninstall by removing these lines or running `tabtab uninstall serverless`
 [ -f /Users/mgarcia/.nvm/versions/node/v10.16.0/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.fish ]; and . /Users/mgarcia/.nvm/versions/node/v10.16.0/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.fish
 # tabtab source for sls package
