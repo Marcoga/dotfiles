@@ -124,4 +124,3 @@ alias feb="git co release/22.02"
 alias march="git co release/22.03"
 alias cprel="echo -n 'release/22.' | pbcopy"
 
-#source ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

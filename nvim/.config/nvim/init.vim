@@ -3,6 +3,17 @@ set relativenumber
 set tabstop=2 softtabstop=2
 set expandtab
 
+set wildmode=longest,list,full
+set wildmenu
+" Ignore files
+set wildignore+=*.pyc
+set wildignore+=*_build/*
+set wildignore+=**/coverage/*
+set wildignore+=**/node_modules/*
+set wildignore+=**/android/*
+set wildignore+=**/ios/*
+set wildignore+=**/.git/*
+
 let mapleader =" "
 nnoremap <leader>pv :Vex<CR>
 nnoremap <leader><CR> :so ~/.config/nvim/init.vim<CR>
@@ -52,6 +63,7 @@ let g:coc_global_extensions += ['coc-eslint']
 
 "command! -nargs=0 Prettier :CocCommand prettier.formatFile
 command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
+let g:prettier#autoformat = 1
 
 set termguicolors     " enable true colors support
 "let ayucolor="light"  " for light version of theme
