@@ -80,7 +80,7 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-bindkey -v 
+bindkey -v
 VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 VI_MODE_SET_CURSOR=true
 MODE_INDICATOR="%F{yellow}+%f"
@@ -108,12 +108,17 @@ MODE_INDICATOR="%F{yellow}+%f"
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
+alias vim="nvim"
+alias vi="nvim"
+alias oldvim="vim"
+alias vimconf="vim $HOME/.config/nvim/init.vim"
+
+alias zshconfig="vim $HOME/.zshrc"
+alias zconf="vim $HOME/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias zshconfig="vim ~/.zshrc"
-alias zconf="vim ~/.zshrc"
 alias av="ansible-vault"
-alias work="cd ~/work"
-alias max="cd ~/work/baml/baml-mobile-advisory"
+alias work="cd $HOME/work"
+alias max="cd $HOME/work/baml/baml-mobile-advisory"
 alias sr="omz reload"
 alias feb="git co release/22.02"
 alias march="git co release/22.03"

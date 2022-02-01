@@ -1,0 +1,10 @@
+{
+        "coc.preferences.formatOnSaveFiletypes": [
+                "javascript",
+                "javascriptreact",
+                "typescript",
+                "typescriptreact"
+        ],
+        "tsserver.formatOnType": false,
+        "coc.preferences.formatOnType": false
+}
