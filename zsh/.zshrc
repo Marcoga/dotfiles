@@ -123,4 +123,5 @@ alias sr="omz reload"
 alias feb="git co release/22.02"
 alias march="git co release/22.03"
 alias cprel="echo -n 'release/22.' | pbcopy"
+alias cleanbr="git branch | grep -ve \" release/*\" | xargs git branch -D"
 
