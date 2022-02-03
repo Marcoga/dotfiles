@@ -1,6 +1,8 @@
 set scrolloff=8
 set relativenumber
-set tabstop=2 softtabstop=2
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
 set expandtab
 
 set wildmode=longest,list,full
