@@ -38,6 +38,19 @@ nnoremap <leader>o :Buffers<CR>
 nnoremap <leader>. :bnext<CR>
 nnoremap <leader>, :bprevious<CR>
 
+" Git
+noremap <Leader>ga :Gwrite<CR>
+noremap <Leader>gc :Git commit --verbose<CR>
+noremap <Leader>gsh :Git push<CR>
+noremap <Leader>gll :Git pull<CR>
+noremap <Leader>gs :Git<CR>
+noremap <Leader>gb :Git blame<CR>
+noremap <Leader>gd :Gvdiffsplit<CR>
+noremap <Leader>gx :GRemove<CR>
+
+"" Open current line on GitHub
+nnoremap <Leader>gh :.GBrowse<CR>
+
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gr <Plug>(coc-references)
@@ -76,6 +89,8 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
+Plug 'airblade/vim-gitgutter'
 
 call plug#end()
 
@@ -93,8 +108,8 @@ autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
 set termguicolors     " enable true colors support
 "let ayucolor="light"  " for light version of theme
 "let ayucolor="mirage" " for mirage version of theme
-"let ayucolor="dark"   " for dark version of theme
-syntax enable
+"let ayucolor="da/Users/mgarcia/dream-tracker.md rk"   " for dark version of theme
+syntax on
 colorscheme night-owl
 let g:lightline = { 'colorscheme': 'nightowl' }
 
