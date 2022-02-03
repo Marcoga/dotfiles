@@ -5,6 +5,7 @@
                 "typescript",
                 "typescriptreact"
         ],
-        "tsserver.formatOnType": false,
-        "coc.preferences.formatOnType": false
+        "tsserver.formatOnType": true,
+        "coc.preferences.formatOnType": true,
+        "prettier.disableSuccessMessage": true
 }
