@@ -26,6 +26,16 @@ nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 nnoremap <C-p> :GFiles<CR>
 nnoremap <leader>e :GFiles<CR>
 
+" Quickfix
+nnoremap <leader>co :copen<CR>
+nnoremap <leader>cn :cnext<CR>
+nnoremap <leader>cp :cprevious<CR>
+
+" Buffers
+nnoremap <leader>o :Buffers<CR>
+nnoremap <leader>. :bnext<CR>
+nnoremap <leader>, :bprevious<CR>
+
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gr <Plug>(coc-references)
@@ -33,6 +43,7 @@ nmap <silent> gr <Plug>(coc-references)
 call plug#begin('~/.vim/plugged')
 
 Plug 'ayu-theme/ayu-vim'
+Plug 'haishanh/night-owl.vim'
 
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -56,6 +67,8 @@ Plug 'jose-elias-alvarez/nvim-lsp-ts-utils'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
+Plug 'tpope/vim-fugitive'
+
 call plug#end()
 
 let g:coc_global_extensions += ['coc-prettier']
@@ -65,8 +78,34 @@ let g:coc_global_extensions += ['coc-eslint']
 command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
 let g:prettier#autoformat = 1
 
+" set filetypes as typescriptreact
+autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
+
+
 set termguicolors     " enable true colors support
 "let ayucolor="light"  " for light version of theme
 "let ayucolor="mirage" " for mirage version of theme
-let ayucolor="dark"   " for dark version of theme
-colorscheme ayu
+"let ayucolor="dark"   " for dark version of theme
+syntax enable
+colorscheme night-owl
+let g:lightline = { 'colorscheme': 'nightowl' }
+
+" dark red
+"hi tsxTagName guifg=#E06C75
+"hi tsxComponentName guifg=#E06C75
+"hi tsxCloseComponentName guifg=#E06C75
+"
+" " orange
+"hi tsxCloseString guifg=#F99575
+"hi tsxCloseTag guifg=#F99575
+"hi tsxCloseTagName guifg=#F99575
+"hi tsxAttributeBraces guifg=#F99575
+"hi tsxEqual guifg=#F99575
+"
+" " yellow
+"hi tsxAttrib guifg=#F8BD7F cterm=italic
+
+" light-grey
+" hi tsxTypeBraces guifg=#999999
+" " dark-grey
+"hi tsxTypes guifg=#666666
