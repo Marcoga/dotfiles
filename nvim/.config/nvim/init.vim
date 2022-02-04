@@ -27,6 +27,7 @@ nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 nnoremap <C-p> :GFiles<CR>
 nnoremap <leader>e :GFiles<CR>
+nnoremap <leader>f :Files<CR>
 
 " Quickfix
 nnoremap <leader>co :copen<CR>
@@ -37,6 +38,8 @@ nnoremap <leader>cp :cprevious<CR>
 nnoremap <leader>o :Buffers<CR>
 nnoremap <leader>. :bnext<CR>
 nnoremap <leader>, :bprevious<CR>
+nnoremap <leader>w :bdelete<CR>
+nnoremap <leader>s :w<CR>
 
 " Git
 noremap <Leader>ga :Gwrite<CR>
