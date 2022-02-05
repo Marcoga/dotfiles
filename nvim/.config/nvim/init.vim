@@ -16,6 +16,8 @@ set wildignore+=**/android/*
 set wildignore+=**/ios/*
 set wildignore+=**/.git/*
 
+#del
+
 let mapleader =" "
 nnoremap <leader>pv :Vex<CR>
 nnoremap <leader><CR> :so ~/.config/nvim/init.vim<CR>
@@ -40,6 +42,7 @@ nnoremap <leader>. :bnext<CR>
 nnoremap <leader>, :bprevious<CR>
 nnoremap <leader>w :bdelete<CR>
 nnoremap <leader>s :w<CR>
+nnoremap <leader>q :q<CR>
 
 " Git
 noremap <Leader>ga :Gwrite<CR>

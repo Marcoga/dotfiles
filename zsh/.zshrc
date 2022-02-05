@@ -108,19 +108,27 @@ MODE_INDICATOR="%F{yellow}+%f"
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
+
+# remap vim to nvim
 alias vim="nvim"
 alias vi="nvim"
 alias oldvim="vim"
 alias vimconf="vim $HOME/.config/nvim/init.vim"
 
+# easy access to my config files
 alias zshconfig="vim $HOME/.zshrc"
 alias zconf="vim $HOME/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+
 alias av="ansible-vault"
+
+# commonly used folders
 alias work="cd $HOME/work"
+alias personal="cd $HOME/personal"
 alias diffing="cd $HOME/work/image-diffing"
 alias max="cd $HOME/work/baml/baml-mobile-advisory"
 alias sr="omz reload"
+
+# max specific (remove when not working on max amymore)
 alias feb="git co release/22.02"
 alias march="git co release/22.03"
 alias cprel="echo -n 'release/22.' | pbcopy"
