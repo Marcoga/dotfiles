@@ -1,5 +1,6 @@
 set scrolloff=8
 set relativenumber
+set number
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
@@ -15,8 +16,6 @@ set wildignore+=**/node_modules/*
 set wildignore+=**/android/*
 set wildignore+=**/ios/*
 set wildignore+=**/.git/*
-
-#del
 
 let mapleader =" "
 nnoremap <leader>pv :Vex<CR>
