@@ -82,6 +82,9 @@ call plug#begin('~/.vim/plugged')
 Plug 'ayu-theme/ayu-vim'
 Plug 'haishanh/night-owl.vim'
 
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 
