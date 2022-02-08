@@ -85,6 +85,10 @@ VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 VI_MODE_SET_CURSOR=true
 MODE_INDICATOR="%F{yellow}+%f"
 
+export PATH=$HOME/.local/bin:$PATH
+bindkey -s ^f "tmux-sessionizer\n"
+
+
 # place this after nvm initialization!
 autoload -U add-zsh-hook
 load-nvmrc() {
