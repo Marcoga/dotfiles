@@ -26,7 +26,7 @@ nnoremap <leader><CR> :so ~/.config/nvim/init.vim<CR>
 nnoremap <leader>f <cmd>Telescope find_files<cr>
 nnoremap <leader>e <cmd>Telescope git_files<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fb <cmd>Telescope git_branches<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 nnoremap <C-p> :GFiles<CR>
 nnoremap <leader>fe :GFiles<CR>
