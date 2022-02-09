@@ -23,13 +23,14 @@ nnoremap <leader>pv :Vex<CR>
 nnoremap <leader><CR> :so ~/.config/nvim/init.vim<CR>
 
 " Find files using Telescope command-line sugar.
-nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>f <cmd>Telescope find_files<cr>
+nnoremap <leader>e <cmd>Telescope git_files<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 nnoremap <C-p> :GFiles<CR>
-nnoremap <leader>e :GFiles<CR>
-nnoremap <leader>f :Files<CR>
+nnoremap <leader>fe :GFiles<CR>
+nnoremap <leader>ff :Files<CR>
 
 " Quickfix
 nnoremap <leader>co :copen<CR>
@@ -37,7 +38,7 @@ nnoremap <leader>cn :cnext<CR>
 nnoremap <leader>cp :cprevious<CR>
 
 " Buffers
-nnoremap <leader>o :Buffers<CR>
+"nnoremap <leader>o :Buffers<CR>
 nnoremap <leader>. :bnext<CR>
 nnoremap <leader>, :bprevious<CR>
 nnoremap <leader>w :bdelete<CR>
