@@ -85,6 +85,7 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'ayu-theme/ayu-vim'
 Plug 'haishanh/night-owl.vim'
+Plug 'mhartington/oceanic-next'
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -92,9 +93,12 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 
-Plug 'pangloss/vim-javascript'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
+
 Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
+Plug 'pangloss/vim-javascript'
 Plug 'jparise/vim-graphql'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -129,29 +133,30 @@ autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
 
 
 set termguicolors     " enable true colors support
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 "let ayucolor="light"  " for light version of theme
 "let ayucolor="mirage" " for mirage version of theme
 "let ayucolor="da/Users/mgarcia/dream-tracker.md rk"   " for dark version of theme
-syntax on
-colorscheme night-owl
-let g:lightline = { 'colorscheme': 'nightowl' }
+syntax enable
+colorscheme ayu
+"let g:lightline = { 'colorscheme': 'nightowl' }
 
 " dark red
-"hi tsxTagName guifg=#E06C75
-"hi tsxComponentName guifg=#E06C75
-"hi tsxCloseComponentName guifg=#E06C75
+hi tsxTagName guifg=#E06C75
+hi tsxComponentName guifg=#E06C75
+hi tsxCloseComponentName guifg=#E06C75
 "
 " " orange
-"hi tsxCloseString guifg=#F99575
-"hi tsxCloseTag guifg=#F99575
-"hi tsxCloseTagName guifg=#F99575
-"hi tsxAttributeBraces guifg=#F99575
-"hi tsxEqual guifg=#F99575
+hi tsxCloseString guifg=#F99575
+hi tsxCloseTag guifg=#F99575
+hi tsxCloseTagName guifg=#F99575
+hi tsxAttributeBraces guifg=#F99575
+hi tsxEqual guifg=#F99575
 "
 " " yellow
-"hi tsxAttrib guifg=#F8BD7F cterm=italic
+hi tsxAttrib guifg=#F8BD7F cterm=italic
 
 " light-grey
-" hi tsxTypeBraces guifg=#999999
+hi tsxTypeBraces guifg=#999999
 " " dark-grey
-"hi tsxTypes guifg=#666666
+hi tsxTypes guifg=#666666

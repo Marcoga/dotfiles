@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+if [[ $# -eq 1 ]]; then
+    selected=$1
+else
+    selected=$(find . -mindepth 1 -maxdepth 1 -type d | fzf)
+fi
+
+if [[ -z $selected ]]; then
+    exit 0
+fi
+
+selected_name=$(basename "$selected" )
+window_name=$(echo "$selected_name" | tr "." "_" )
+selected_path=$(echo "$(cd "$(dirname "$1")"; pwd -P)/$(basename "$1")"$selected_name"")
+
+window_running=$(tmux list-windows | grep  "$window_name" | sed "s/:.*//")
+
+if [[ -z $window_running ]] 2> /dev/null; then
+  tmux new-window -c $selected_path -n $window_name
+  exit 0;
+fi
+
+tmux select-window -t $window_running
+
