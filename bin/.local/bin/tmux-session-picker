@@ -10,5 +10,4 @@ if [[ -z $selected ]]; then
     exit 0
 fi
 
-tmux_running=$(pgrep tmux)
 tmux switch-client -t $selected
