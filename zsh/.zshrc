@@ -156,5 +156,6 @@ alias sr="omz reload"
 # max specific (remove when not working on max amymore)
 alias feb="git co release/22.02"
 alias march="git co release/22.03"
+alias may="git co release/22.05"
 alias cprel="echo -n 'release/22.' | pbcopy"
 alias cleanbr="git branch | grep -ve \" release/*\" | xargs git branch -D"
