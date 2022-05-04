@@ -12,6 +12,7 @@ set nohlsearch
 set noswapfile
 set incsearch
 set colorcolumn=120
+set autoread
 
 set wildmode=longest,list,full
 set wildmenu
@@ -37,7 +38,6 @@ nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope git_branches<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 noremap <leader>8 <cmd>Telescope grep_string<cr>
-nnoremap <C-p> :GFiles<CR>
 nnoremap <leader>fe :GFiles<CR>
 nnoremap <leader>ff :Files<CR>
 
