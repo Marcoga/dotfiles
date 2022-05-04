@@ -6,6 +6,12 @@ set softtabstop=2
 set shiftwidth=2
 set expandtab
 set smartindent
+set hidden
+set noerrorbells
+set nohlsearch
+set noswapfile
+set incsearch
+set colorcolumn=120
 
 set wildmode=longest,list,full
 set wildmenu
