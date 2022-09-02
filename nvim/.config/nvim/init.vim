@@ -41,6 +41,12 @@ noremap <leader>8 <cmd>Telescope grep_string<cr>
 nnoremap <leader>fe :GFiles<CR>
 nnoremap <leader>ff :Files<CR>
 
+" Harpoon shortcuts
+nnoremap <leader>hh <cmd>:lua require("harpoon.mark").add_file()<cr>
+nnoremap <leader>h <cmd>lua require("harpoon.ui").toggle_quick_menu()<cr>
+nnoremap <leader>hk <cmd>lua require("harpoon.ui").nav_prev()<cr>
+nnoremap <leader>hj <cmd>lua require("harpoon.ui").nav_next()<cr>
+
 " Quickfix
 nnoremap <leader>co :copen<CR>
 nnoremap <leader>cn :cnext<CR>
