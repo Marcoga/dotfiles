@@ -139,6 +139,7 @@ alias vim="nvim"
 alias vi="nvim"
 alias oldvim="vim"
 alias vimconf="vim $HOME/.config/nvim/init.vim"
+alias pn="pnpm"
 
 # easy access to my config files
 alias zshconfig="vim $HOME/.zshrc"
