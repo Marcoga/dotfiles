@@ -1,4 +1,5 @@
 set scrolloff=16
+set signcolumn=yes
 set relativenumber
 set number
 set tabstop=2
