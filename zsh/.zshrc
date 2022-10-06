@@ -147,14 +147,10 @@ alias zconf="vim $HOME/.zshrc"
 
 alias av="ansible-vault"
 
-# commonly used folders
-alias work="cd $HOME/work"
-alias personal="cd $HOME/personal"
-alias diffing="cd $HOME/work/image-diffing"
-alias max="cd $HOME/work/baml/baml-mobile-advisory"
+# command shortcuts
 alias sr="omz reload"
-
 # max specific (remove when not working on max amymore)
+alias bet="git co release/00.00"
 alias aug="git co release/22.08"
 alias sep="git co release/22.09"
 alias nov="git co release/22.11"
