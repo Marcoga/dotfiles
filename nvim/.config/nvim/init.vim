@@ -70,6 +70,7 @@ noremap <Leader>gs :Git<CR>
 noremap <Leader>gb :Git blame<CR>
 noremap <Leader>gd :Gvdiffsplit<CR>
 noremap <Leader>gx :GRemove<CR>
+noremap <Leader>gp :Git -c push.default=current push<CR>
 
 "" Open current line on GitHub
 nnoremap <Leader>gh :.GBrowse<CR>
