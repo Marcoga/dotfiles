@@ -58,6 +58,7 @@ nnoremap <leader>cp :cprevious<CR>
 nnoremap <leader>. :bnext<CR>
 nnoremap <leader>, :bprevious<CR>
 nnoremap <leader>w :bdelete<CR>
+nnoremap <leader>` :bdelete!<CR>
 nnoremap <leader>s :w<CR>
 nnoremap <leader>q :q<CR>
 
@@ -78,7 +79,7 @@ nnoremap <Leader>gh :.GBrowse<CR>
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gr <Plug>(coc-references)
-
+inoremap <silent><expr> <c-space> coc#refresh()
 nmap <silent> <leader>[ <Plug>(coc-diagnostic-prev)
 nmap <silent> <leader>] <Plug>(coc-diagnostic-next)
 nnoremap <silent> <leader>d :<C-u>CocList diagnostics<cr>
