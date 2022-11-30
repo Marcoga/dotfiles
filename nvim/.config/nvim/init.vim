@@ -7,6 +7,7 @@ set softtabstop=2
 set shiftwidth=2
 set expandtab
 set smartindent
+set smartcase
 set hidden
 set noerrorbells
 set nohlsearch
