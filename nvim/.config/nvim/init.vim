@@ -17,6 +17,10 @@ set incsearch
 set colorcolumn=120
 set autoread
 
+" add copilot shortcuts
+nnoremap <leader>cc :Copilot<CR>
+nnoremap <leader>cs :CopilotStop<CR>
+
 set wildmode=longest,list,full
 set wildmenu
 " Ignore files
@@ -138,6 +142,8 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
 Plug 'airblade/vim-gitgutter'
+
+Plug 'github/copilot.vim'
 
 call plug#end()
 
