@@ -20,6 +20,8 @@ set autoread
 " add copilot shortcuts
 nnoremap <leader>cc :Copilot<CR>
 nnoremap <leader>cs :CopilotStop<CR>
+imap <silent> <C-j> <Plug>(copilot-next)
+imap <silent> <C-k> <Plug>(copilot-previous)
 
 set wildmode=longest,list,full
 set wildmenu
