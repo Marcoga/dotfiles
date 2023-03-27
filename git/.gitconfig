@@ -6,14 +6,14 @@
 	st = status
 	ci = commit
 	br = branch
-    pullre = pull --recurse-submodules
-    pusht = push --follow-tags
-    cloner = clone --recurse-submodules
-    subadd = !sh -c 'git submodule add git@github.com:dcodeit/$1.git ./src/packages/$1' -
-    subdel = !sh -c 'git submodule deinit ./src/packages/$1 && git rm ./src/packages/$1' -
-    subupd = !sh -c 'git submodule update --init -- ./src/packages/$1' -
-    subupda = submodule update --init --recursive
-    subupgr = !sh -c 'git submodule update --remote --merge -- ./src/packages/$1'
+  pullre = pull --recurse-submodules
+  pusht = push --follow-tags
+  cloner = clone --recurse-submodules
+  subadd = !sh -c 'git submodule add git@github.com:dcodeit/$1.git ./src/packages/$1' -
+  subdel = !sh -c 'git submodule deinit ./src/packages/$1 && git rm ./src/packages/$1' -
+  subupd = !sh -c 'git submodule update --init -- ./src/packages/$1' -
+  subupda = submodule update --init --recursive
+  subupgr = !sh -c 'git submodule update --remote --merge -- ./src/packages/$1'
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
