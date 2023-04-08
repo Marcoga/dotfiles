@@ -71,6 +71,7 @@ nnoremap <leader>w :bdelete<CR>
 nnoremap <leader>` :bdelete!<CR>
 nnoremap <leader>s :w<CR>
 nnoremap <leader>q :q<CR>
+nnoremap <leader>fq :qa!<CR>
 
 " Git
 noremap <Leader>ga :Gwrite<CR>
@@ -168,7 +169,7 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 "let ayucolor="mirage" " for mirage version of theme
 "let ayucolor="da/Users/mgarcia/dream-tracker.md rk"   " for dark version of theme
 syntax enable
-colorscheme ayu
+colorscheme night-owl
 "let g:lightline = { 'colorscheme': 'nightowl' }
 
 " dark red
