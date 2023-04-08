@@ -85,7 +85,7 @@ VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 VI_MODE_SET_CURSOR=true
 MODE_INDICATOR="%F{yellow}+%f"
 
-export PATH=$HOME/.local/bin:$PATH
+export PATH=$HOME/.local/bin:/opt/homebrew/bin:$PATH
 bindkey -s ^f "tmux-sessionizer\n"
 
 
@@ -140,6 +140,7 @@ alias vi="nvim"
 alias oldvim="vim"
 alias vimconf="vim $HOME/.config/nvim/init.vim"
 alias pn="pnpm"
+alias lg="lazygit"
 
 # easy access to my config files
 alias zshconfig="vim $HOME/.zshrc"
@@ -150,15 +151,9 @@ alias av="ansible-vault"
 # command shortcuts
 alias sr="omz reload"
 # max specific (remove when not working on max amymore)
-alias bet="git co release/00.00"
-alias aug="git co release/22.08"
-alias sep="git co release/22.09"
 alias nov="git co release/22.11"
-alias march="git co release/22.03"
 alias may="git co release/23.05"
-alias jan="git co release/23.01"
-alias feb="git co release/23.02"
-alias cprel="echo -n 'release/22.' | pbcopy"
+alias cprel="echo -n 'release/23.' | pbcopy"
 alias cleanbr="git branch | grep -ve \" release/*\" | xargs git branch -D"
 
 export PATH="$PATH:/Users/marco/.kit/bin"
