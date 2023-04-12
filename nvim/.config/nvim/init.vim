@@ -52,8 +52,7 @@ noremap <leader>8 <cmd>Telescope grep_string<cr>
 noremap <leader>fr <cmd>Telescope registers<cr>
 nnoremap <leader>fe :GFiles<CR>
 nnoremap <leader>ff :Files<CR>
-inoremap <silent><leader>fr <cmd>lua require'telescope.builtin'.registers(require('telescope.themes').get_cursor({}))<cr>
-
+inoremap <silent><C-y> <cmd>lua require'telescope.builtin'.registers(require('telescope.themes').get_cursor({}))<cr>
 " Harpoon shortcuts
 nnoremap <leader>hh <cmd>:lua require("harpoon.mark").add_file()<cr>
 nnoremap <leader>h <cmd>lua require("harpoon.ui").toggle_quick_menu()<cr>
