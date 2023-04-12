@@ -38,6 +38,8 @@ let mapleader =" "
 nnoremap <leader>pv :Vex<CR>
 nnoremap <leader><CR> :so ~/.config/nvim/init.vim<CR>
 nnoremap <leader>x :silent !chmod +x %<CR>
+vnoremap <leader>y "+y
+nnoremap <leader>y "+yiw
 
 " Find files using Telescope command-line sugar.
 nnoremap <leader>f <cmd>Telescope find_files<cr>
