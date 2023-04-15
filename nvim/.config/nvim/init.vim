@@ -151,6 +151,8 @@ Plug 'airblade/vim-gitgutter'
 
 Plug 'github/copilot.vim'
 
+Plug 'tommcdo/vim-exchange'
+
 call plug#end()
 
 let g:coc_global_extensions += ['coc-prettier']
