@@ -1,4 +1,4 @@
-set scrolloff=16
+set scrolloff=2 
 set signcolumn=yes
 set relativenumber
 set number
@@ -44,7 +44,7 @@ nnoremap <leader>y "+yiw
 " Find files using Telescope command-line sugar.
 nnoremap <leader>f <cmd>Telescope find_files<cr>
 nnoremap <leader>e <cmd>Telescope git_files<cr>
-nnoremap <leader>o <cmd>Telescope buffers<cr>
+nnoremap <leader>o <cmd>lua require('telescope.builtin').buffers({sort_lastused = true, ignore_current_buffer = true})<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope git_branches<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
@@ -52,7 +52,7 @@ noremap <leader>8 <cmd>Telescope grep_string<cr>
 noremap <leader>fr <cmd>Telescope registers<cr>
 nnoremap <leader>fe :GFiles<CR>
 nnoremap <leader>ff :Files<CR>
-inoremap <silent><C-y> <cmd>lua require'telescope.builtin'.registers(require('telescope.themes').get_cursor({}))<cr>
+"inoremap <silent><C-y> <cmd>lua require'telescope.builtin'.registers(require('telescope.themes').get_cursor({}))<cr>
 " Harpoon shortcuts
 nnoremap <leader>hh <cmd>:lua require("harpoon.mark").add_file()<cr>
 nnoremap <leader>h <cmd>lua require("harpoon.ui").toggle_quick_menu()<cr>
@@ -88,10 +88,13 @@ noremap <Leader>gp :Git -c push.default=current push<CR>
 "" Open current line on GitHub
 nnoremap <Leader>gh :.GBrowse<CR>
 
+imap <C-c> <Esc>
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gr <Plug>(coc-references)
+nmap <silent> cr <Plug>coc#refresh()
 inoremap <silent><expr> <c-space> coc#refresh()
+
 nmap <silent> <leader>[ <Plug>(coc-diagnostic-prev)
 nmap <silent> <leader>] <Plug>(coc-diagnostic-next)
 nnoremap <silent> <leader>d :<C-u>CocList diagnostics<cr>
@@ -100,6 +103,7 @@ nmap <leader>rn <Plug>(coc-rename)
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
+nnoremap <leader>u :UndotreeToggle<CR>
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
@@ -125,11 +129,13 @@ Plug 'ThePrimeagen/harpoon'
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
+Plug 'nvim-treesitter/nvim-treesitter-context'
 
 Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
 Plug 'pangloss/vim-javascript'
 Plug 'jparise/vim-graphql'
+Plug 'mbbill/undotree'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 let g:coc_global_extensions = [
@@ -152,9 +158,13 @@ Plug 'airblade/vim-gitgutter'
 Plug 'github/copilot.vim'
 
 Plug 'tommcdo/vim-exchange'
+Plug 'tpope/vim-surround'
+Plug 'psliwka/vim-smoothie'
 
 call plug#end()
 
+lua require'treesitter-context'.setup{multiline_threshold = 3}
+" set   multiline_threshold = 5 in lua for nvim
 let g:coc_global_extensions += ['coc-prettier']
 let g:coc_global_extensions += ['coc-eslint']
 
@@ -172,7 +182,7 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 "let ayucolor="mirage" " for mirage version of theme
 "let ayucolor="da/Users/mgarcia/dream-tracker.md rk"   " for dark version of theme
 syntax enable
-colorscheme night-owl
+colorscheme OceanicNext
 "let g:lightline = { 'colorscheme': 'nightowl' }
 
 " dark red
