@@ -85,7 +85,7 @@ VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 VI_MODE_SET_CURSOR=true
 MODE_INDICATOR="%F{yellow}+%f"
 
-export PATH=$HOME/.local/bin:/opt/homebrew/bin:$PATH
+export PATH=$HOME/.local/bin:/opt/homebrew/bin:$PATH:$(npm bin -g)
 bindkey -s ^f "tmux-sessionizer\n"
 
 
@@ -155,6 +155,7 @@ alias nov="git co release/22.11"
 alias may="git co release/23.05"
 alias cprel="echo -n 'release/23.' | pbcopy"
 alias cleanbr="git branch | grep -ve \" release/*\" | xargs git branch -D"
+alias alog="tail -f ~/Library/Application\ Support/i360/tradeit-221003/logs/arthos.log"
 
 export PATH="$PATH:/Users/marco/.kit/bin"
 export PATH="$PATH:/Users/marco/.kenv/bin"
