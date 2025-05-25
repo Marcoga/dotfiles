@@ -10,14 +10,6 @@ return require('packer').startup(function(use)
   }
 
   use({
-	  'rose-pine/neovim',
-	  as = 'rose-pine',
-	  config = function()
-		  vim.cmd('colorscheme rose-pine')
-	  end
-  })
-
-  use({
       "folke/trouble.nvim",
       config = function()
           require("trouble").setup {
@@ -78,10 +70,9 @@ return require('packer').startup(function(use)
   use("vim-airline/vim-airline-themes")
 
   -- Formatter
-  use({
-    "prettier/vim-prettier",
-    run = "yarn install --frozen-lockfile --production",
-  })
+  use('neovim/nvim-lspconfig')
+  use('jose-elias-alvarez/null-ls.nvim')
+  use('MunifTanjim/prettier.nvim')
 
   -- FZF
   use({

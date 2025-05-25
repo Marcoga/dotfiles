@@ -1,6 +1,5 @@
 --optoptsks eymaps.lua
 -- Neovim key mappings
-local opts = { noremap = true, silent = true }
 
 -- Copilot shortcuts
 vim.keymap.set('n', '<leader>cc', ':Copilot<CR>', { noremap = true, silent = true })
@@ -9,7 +8,7 @@ vim.keymap.set('i', '<C-j>', '<Plug>(copilot-next)', {})
 vim.keymap.set('i', '<C-k>', '<Plug>(copilot-previous)', {})
 
 -- File explorer
-vim.keymap.set('n', '<leader>pv', ':Vex<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>pv', ':Exp<CR>', { noremap = true, silent = true })
 
 -- Source config
 vim.keymap.set('n', '<leader><CR>', ':so ~/.config/nvim/init.lua<CR>', { noremap = true, silent = true })
@@ -21,17 +20,6 @@ vim.keymap.set('n', '<leader>x', ':silent !chmod +x %<CR>', { noremap = true, si
 vim.keymap.set('v', '<leader>y', '"+y', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>y', '"+yiw', { noremap = true, silent = true })
 
--- Telescope mappings
---vim.keymap.set('n', '<leader>f', '<cmd>Telescope find_files<cr>')
-vim.keymap.set('n', '<leader>e', '<cmd>Telescope git_files<cr>')
-vim.keymap.set('n', '<leader>o', '<cmd>Telescope buffers<cr>')
-vim.keymap.set('n', '<leader>fg', '<cmd>Telescope live_grep<cr>')
-vim.keymap.set('n', '<leader>fb', '<cmd>Telescope git_branches<cr>')
-vim.keymap.set('n', '<leader>fh', '<cmd>Telescope help_tags<cr>')
-vim.keymap.set('n', '<leader>8', '<cmd>Telescope grep_string<cr>')
-vim.keymap.set('n', '<leader>fr', '<cmd>Telescope registers<cr>')
-vim.keymap.set('n', '<leader>fe', ':GFiles<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>ff', ':Files<CR>', { noremap = true, silent = true })
 
 -- Harpoon shortcuts
 vim.keymap.set('n', '<leader>hh', '<cmd>:lua require("harpoon.mark").add_file()<cr>', { noremap = true, silent = true })

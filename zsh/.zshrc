@@ -138,7 +138,7 @@ load-nvmrc
 alias vim="nvim"
 alias vi="nvim"
 alias oldvim="vim"
-alias vimconf="vim $HOME/.config/nvim/init.vim"
+#alias vimconf="vim $HOME/.config/nvim/init.lua"
 alias pn="pnpm"
 alias lg="lazygit"
 
