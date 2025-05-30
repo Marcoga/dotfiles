@@ -42,3 +42,5 @@ raycast/
 telescope_history
 log
 configstore/
+packer_compiled.lua
+

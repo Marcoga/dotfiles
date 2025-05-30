@@ -24,3 +24,5 @@
 	rebase = false
 [push]
 	autoSetupRemote = true
+[maintenance]
+	repo = /Users/mgarcia/work/i360
