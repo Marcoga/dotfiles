@@ -27,7 +27,7 @@ vim.o.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.o.inccommand = "split"
 vim.o.cursorline = true
-vim.o.scrolloff = 10
+vim.opt.scrolloff = 10
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -44,8 +44,8 @@ vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" }
 opt.relativenumber = true
 opt.number = true
 
-opt.tabstop = 4
-opt.softtabstop = 4
+opt.tabstop = 2
+opt.softtabstop = 2
 opt.shiftwidth = 4
 opt.expandtab = true
 opt.smartindent = true
@@ -65,16 +65,6 @@ vim.opt.undofile = true
 
 -- Enable filetype detection and indentation
 vim.cmd("filetype plugin indent on")
-
--- Prettier settings
---g.prettier_autoformat = 1
---g.prettier_autoformat_config_present = 1
---g.prettier_autoformat_require_pragma = 0
-
--- Format on save for TypeScript/React files
---vim.cmd([[
---autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js,*.less Prettier
---]])
 
 -- Wildmenu settings
 opt.wildmode = "longest,list,full"
@@ -125,20 +115,20 @@ autocmd("LspAttach", {
 	callback = function(e)
 		local opts = { buffer = e.buf }
 
-        vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-        vim.keymap.set('n', 'gy', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-        vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-        vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-        vim.keymap.set('n', '<leader>[', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-        vim.keymap.set('n', '<leader>]', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-        vim.keymap.set('n', '<leader>d', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-        vim.keymap.set('n', '<leader>do', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-        vim.keymap.set('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-        vim.keymap.set('i', '<C-h>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-        vim.keymap.set('n', '<leader>ld', '<cmd>Telescope diagnostics<CR>', opts)
-        vim.keymap.set('n', '<leader>li', '<cmd>LspInfo<CR>', opts)
-        vim.keymap.set('n', '<leader>la', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-        vim.keymap.set('n', '<leader>lr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-        vim.keymap.set('n', '<leader>ll', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+		vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
+		vim.keymap.set("n", "gy", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
+		vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
+		vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
+		vim.keymap.set("n", "<leader>[", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
+		vim.keymap.set("n", "<leader>]", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
+		vim.keymap.set("n", "<leader>d", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
+		vim.keymap.set("n", "<leader>do", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
+		vim.keymap.set("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
+		vim.keymap.set("i", "<C-h>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
+		vim.keymap.set("n", "<leader>ld", "<cmd>Telescope diagnostics<CR>", opts)
+		vim.keymap.set("n", "<leader>li", "<cmd>LspInfo<CR>", opts)
+		vim.keymap.set("n", "<leader>la", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", opts)
+		vim.keymap.set("n", "<leader>lr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", opts)
+		vim.keymap.set("n", "<leader>ll", "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>", opts)
 	end,
 })
