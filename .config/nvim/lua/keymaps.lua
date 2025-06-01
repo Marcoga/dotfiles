@@ -1,6 +1,9 @@
 --optoptsks eymaps.lua
 -- Neovim key mappings
 
+-- file tree editor
+vim.keymap.set("n", "<leader>f", ":Oil<CR>")
+vim.keymap.set("n", "<leader>bc", ":bufdo bwipeout<CR>")
 -- Copilot shortcuts
 vim.keymap.set("n", "<leader>cc", ":Copilot<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>cs", ":CopilotStop<CR>", { noremap = true, silent = true })
