@@ -18,7 +18,7 @@ arch_tag() {
 gh_release_asset() {
   local repo="$1" pattern="$2" dest="$3" url
   url="$(curl -fsSL "https://api.github.com/repos/$repo/releases/latest" \
-        | grep -o '"browser_download_url": *"[^"]*"' | cut -d'"' -f4 | grep -E "$pattern" | head -1)"
+        | grep -o '"browser_download_url": *"[^"]*"' | cut -d'"' -f4 | grep -iE "$pattern" | head -1)"
   [[ -n "$url" ]] || die "no release asset for $repo matching $pattern"
   log "downloading $url"
   curl -fsSL -o "$dest" "$url"

@@ -119,11 +119,17 @@ ensure_default_shell_zsh() {
     current="$(getent passwd "$USER" | cut -d: -f7)"
   fi
   if [[ "$current" == *zsh ]]; then return; fi
-  log "changing login shell to $zsh_path (may ask for your password)"
+  log "changing login shell to $zsh_path"
   if ! grep -qx "$zsh_path" /etc/shells 2>/dev/null; then
     echo "$zsh_path" | sudo tee -a /etc/shells >/dev/null
   fi
-  chsh -s "$zsh_path" || warn "chsh failed — run: chsh -s $zsh_path"
+  if sudo -n true 2>/dev/null; then
+    sudo chsh -s "$zsh_path" "$USER" || warn "chsh failed — run: chsh -s $zsh_path"
+  elif [[ -t 0 ]]; then
+    chsh -s "$zsh_path" || warn "chsh failed — run: chsh -s $zsh_path"
+  else
+    warn "no tty and no passwordless sudo — run manually: chsh -s $zsh_path"
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -215,6 +221,13 @@ bootstrap_nvim() {
   export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
   # shellcheck disable=SC1091
   [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh" >/dev/null 2>&1 || true
+  # A lazy.nvim checkout that was interrupted mid-clone makes init.lua skip the
+  # clone forever (it only checks that the directory exists) — remove it.
+  local lazydir="${XDG_DATA_HOME:-$HOME/.local/share}/nvim/lazy/lazy.nvim"
+  if [[ -d "$lazydir" && ! -f "$lazydir/lua/lazy/init.lua" ]]; then
+    warn "removing broken lazy.nvim checkout at $lazydir"
+    rm -rf "$lazydir"
+  fi
   log "nvim: installing plugins (lazy.nvim sync)"
   nvim --headless "+Lazy! sync" +qa 2>&1 | tail -n 5 || warn "lazy sync reported errors"
   log "nvim: treesitter parsers"
