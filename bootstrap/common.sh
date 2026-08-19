@@ -130,7 +130,7 @@ ensure_default_shell_zsh() {
 # Stow
 # ---------------------------------------------------------------------------
 # Physical path of a (possibly symlinked) directory.
-realdir() { (cd "$1" 2>/dev/null && pwd -P); }
+realdir() { (cd "$1" 2>/dev/null && pwd -P) || true; }
 
 # Move real files that would conflict with a package out of the way, and drop
 # symlinks left by a previous layout. Never touches anything that already

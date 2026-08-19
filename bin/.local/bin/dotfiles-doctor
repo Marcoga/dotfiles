@@ -13,13 +13,16 @@ if [[ -d "$DOTFILES/.git" ]]; then
 fi
 
 echo "links:"
-check_link() {  # check_link <home-relative path> <expected repo-relative target prefix>
-  local p="$HOME/$1" want="$2"
-  if [[ -L "$p" ]]; then
-    local real; real="$(cd "$(dirname "$p")" && cd "$(dirname "$(readlink "$p")")" 2>/dev/null && pwd -P)/$(basename "$(readlink "$p")")"
-    if [[ "$real" == "$(cd "$DOTFILES" && pwd -P)/$want"* ]]; then ok "~/$1 -> $want"; else bad "~/$1 -> $(readlink "$p") (expected into $want)"; fi
-  elif [[ -e "$p" ]]; then bad "~/$1 is a real file/dir, not a symlink into the repo"
-  else bad "~/$1 missing"; fi
+repo_real="$(cd "$DOTFILES" && pwd -P)"
+# physical path of a file/dir, following symlinks in every component
+realpath_of() { local d; d="$(cd "$(dirname "$1")" 2>/dev/null && pwd -P)" || return 1; local b; b="$(basename "$1")"; if [[ -L "$d/$b" ]]; then local t; t="$(readlink "$d/$b")"; case "$t" in /*) realpath_of "$t";; *) realpath_of "$d/$t";; esac; else echo "$d/$b"; fi; }
+check_link() {  # check_link <home-relative path> <expected repo-relative target>
+  local p="$HOME/$1" want="$2" real
+  if [[ ! -e "$p" ]]; then bad "~/$1 missing"; return; fi
+  real="$(realpath_of "$p")"
+  if [[ "$real" == "$repo_real/$want" ]]; then ok "~/$1 -> $want"
+  elif [[ "$real" == "$repo_real"/* ]]; then bad "~/$1 resolves to ${real#"$repo_real"/} (expected $want)"
+  else bad "~/$1 is a real file/dir ($real), not linked into the repo"; fi
 }
 check_link .zshrc zsh/.zshrc
 check_link .tmux.conf tmux/.tmux.conf
@@ -34,9 +37,10 @@ for d in bin zsh tmux git nvim config launchd install ubuntu; do
   [[ -L "$HOME/$d" && "$(readlink "$HOME/$d")" == dotfiles/* ]] && bad "~/$d -> $(readlink "$HOME/$d") — stray root-level stow symlink"
 done
 
+ver() { case "$1" in nvim) nvim --version | head -1 | sed "s/NVIM //";; tmux) tmux -V | cut -d" " -f2;; node) node --version;; *) ;; esac; }
 echo "tools:"
 for t in zsh git stow tmux nvim fzf rg fd lazygit gitmux gh node; do
-  if command -v "$t" >/dev/null 2>&1; then ok "$t $(case $t in nvim) nvim --version | head -1 | sed 's/NVIM //';; tmux) tmux -V | cut -d' ' -f2;; node) node --version;; *) ;; esac)"
+  if command -v "$t" >/dev/null 2>&1; then ok "$t $(ver "$t")"
   else case $t in gitmux|gh|lazygit|fd) miss "$t not installed (optional)";; *) bad "$t not installed";; esac; fi
 done
 if [[ -x "$HOME/.deno/bin/deno" ]] || command -v deno >/dev/null 2>&1; then ok "deno (peek.nvim)"; else miss "deno not installed (only peek.nvim needs it)"; fi
