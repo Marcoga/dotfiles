@@ -1,6 +1,9 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
+		-- The plugin's default branch is now the rewritten `main` (no
+		-- nvim-treesitter.configs module). Stay on the legacy `master` API.
+		branch = "master",
 		build = ":TSUpdate",
 		config = function()
 			require("nvim-treesitter.configs").setup({

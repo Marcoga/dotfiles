@@ -228,8 +228,8 @@ bootstrap_nvim() {
     warn "removing broken lazy.nvim checkout at $lazydir"
     rm -rf "$lazydir"
   fi
-  log "nvim: installing plugins (lazy.nvim sync)"
-  nvim --headless "+Lazy! sync" +qa 2>&1 | tail -n 5 || warn "lazy sync reported errors"
+  log "nvim: installing plugins (lazy.nvim restore = versions from lazy-lock.json)"
+  nvim --headless "+Lazy! restore" +qa 2>&1 | tail -n 5 || warn "lazy restore reported errors"
   log "nvim: treesitter parsers"
   nvim --headless "+TSUpdateSync" +qa >/dev/null 2>&1 || warn "TSUpdateSync reported errors"
   log "nvim: mason tools (lsp servers / formatters)"
