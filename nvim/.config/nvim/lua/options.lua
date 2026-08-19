@@ -11,7 +11,7 @@ local yank_group = augroup("HighlightYank", {})
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 vim.o.mouse = "a"
 vim.o.showmode = false
 vim.o.breakindent = true
@@ -84,8 +84,6 @@ opt.wildignore:append({
 
 -- Syntax highlighting
 --vim.cmd('syntax enable')
-require("night-owl").setup()
-vim.cmd.colorscheme("night-owl")
 
 vim.filetype.add({
 	extension = {

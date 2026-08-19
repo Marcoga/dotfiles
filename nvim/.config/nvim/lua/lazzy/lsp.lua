@@ -65,6 +65,7 @@ return {
 				vim.keymap.set("n", "<leader>d", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
 				vim.keymap.set("n", "<leader>do", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
 				vim.keymap.set("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
+				vim.keymap.set("n", "<leader>rs", "<cmd>LspInfo<CR>", opts)
 				vim.keymap.set("i", "<C-h>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
 				vim.keymap.set("n", "<leader>ld", "<cmd>Telescope diagnostics<CR>", opts)
 				vim.keymap.set("n", "<leader>li", "<cmd>LspInfo<CR>", opts)
@@ -233,6 +234,17 @@ return {
 					Lua = {
 						completion = {
 							callSnippet = "Replace",
+						},
+						workspace = {
+							checkThirdParty = false,
+							ignoreDir = {
+								"bin/.local/share",
+								"bin/.local/state",
+								".local/share",
+								".local/state",
+								"node_modules",
+								".git",
+							},
 						},
 						-- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
 						-- diagnostics = { disable = { 'missing-fields' } },

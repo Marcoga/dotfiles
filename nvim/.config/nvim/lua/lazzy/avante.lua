@@ -5,18 +5,33 @@ return {
 	opts = {
 		-- add any opts here
 		-- for example
-		provider = "copilot",
+		provider = "claude",
+		auto_suggestions_provider = "claude-sonnet-suggestions",
 		providers = {
-			openai = {
-				endpoint = "https://api.openai.com/v1",
-				model = "gpt-4o", -- your desired model (or use gpt-4o, etc.)
+			claude = {
+				endpoint = "https://api.anthropic.com",
+				model = "claude-sonnet-4-5",
+				timeout = 30000, -- Timeout in milliseconds
 				extra_request_body = {
-					timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
 					temperature = 0.75,
-					max_completion_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
-					--reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
+					max_tokens = 20480,
 				},
 			},
+			["claude-sonnet-suggestions"] = {
+				__inherited_from = "claude",
+				model = "claude-sonnet-4-5",
+				extra_request_body = {
+					temperature = 0.2,
+					max_tokens = 4096,
+				},
+			},
+		},
+		behaviour = {
+			-- Avante's auto-suggestion path is broken on nvim 0.11.x:
+			-- utils.trim_line_numbers returns gsub's 2-value result, which
+			-- vim.iter packs as tables, blowing up table.concat in suggestion.lua.
+			-- Use copilot.lua (or similar) for ghost-text completion instead.
+			auto_suggestions = false,
 		},
 	},
 	-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`

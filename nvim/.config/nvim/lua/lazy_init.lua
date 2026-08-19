@@ -15,3 +15,4 @@ require("lazy").setup({
 	spec = "lazzy",
 	change_detection = { notify = false },
 })
+vim.cmd.colorscheme("night-owl")

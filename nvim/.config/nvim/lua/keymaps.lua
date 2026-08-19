@@ -10,9 +10,6 @@ vim.keymap.set("n", "<leader>cs", ":CopilotStop<CR>", { noremap = true, silent =
 vim.keymap.set("i", "<C-j>", "<Plug>(copilot-next)", {})
 vim.keymap.set("i", "<C-k>", "<Plug>(copilot-previous)", {})
 
--- File explorer
-vim.keymap.set("n", "<leader>pv", ":Exp<CR>", { noremap = true, silent = true })
-
 -- Source config
 vim.keymap.set("n", "<leader><CR>", ":so ~/.config/nvim/init.lua<CR>", { noremap = true, silent = true })
 
@@ -80,9 +77,9 @@ vim.keymap.set("n", "<Leader>ga", ":Gwrite<CR>", { noremap = true, silent = true
 vim.keymap.set("n", "<Leader>gc", ":Git commit --verbose<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>gsh", ":Git push<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>gll", ":Git pull<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<Leader>gs", ":Git<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>gs", vim.cmd.Git)
 vim.keymap.set("n", "<Leader>gb", ":Git blame<CR>", { noremap = true, silent = true })
---vim.keymap.set("n", "<Leader>gd", ":Gvdiffsplit<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>gd", ":Gvdiffsplit<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>gx", ":GRemove<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>gp", ":Git -c push.default=current push<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>gh", ":.GBrowse<CR>", { noremap = true, silent = true })
@@ -108,6 +105,26 @@ vim.keymap.set("i", "<C-h>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", { nore
 
 -- Undotree
 vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>", { noremap = true, silent = true })
+
+-- octo.nvim
+vim.keymap.set(
+	"n",
+	"<leader>pc",
+	":Octo search author:Marcoga is:open is:pr repo:dcodeit/i360<CR>",
+	{ noremap = true, silent = true }
+)
+vim.keymap.set(
+	"n",
+	"<leader>pr",
+	":Octo search user-review-requested:@me is:pr is:open  repo:dcodeit/i360<CR>",
+	{ noremap = true, silent = true }
+)
+vim.keymap.set(
+	"n",
+	"<leader>pa",
+	":Octo search is:pr is:open  repo:dcodeit/i360<CR>",
+	{ noremap = true, silent = true }
+)
 
 -- Create a proper Prettier command with LSP formatting
 vim.cmd([[command! -nargs=0 Prettier lua vim.lsp.buf.format({ async = true })]])

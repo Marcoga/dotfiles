@@ -21,7 +21,23 @@ return {
 
 		vim.keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>")
 		vim.keymap.set("n", "<leader>ps", function()
-			builtin.grep_string({ search = vim.fn.input("Grep > ") })
+			builtin.grep_string({
+				search = vim.fn.input("Grep > "),
+				additional_args = function()
+					return {
+						"--glob",
+						"!.claude/**",
+						"--glob",
+						"!node_modules/**",
+						"--glob",
+						"!.git/**",
+						"--glob",
+						"!dist/**",
+						"--glob",
+						"!build/**",
+					}
+				end,
+			})
 		end)
 		vim.keymap.set("n", "<leader>fb", "<cmd>Telescope git_branches<cr>")
 		vim.keymap.set("n", "<leader>fh", builtin.help_tags)

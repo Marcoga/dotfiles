@@ -13,7 +13,7 @@ return {
 	{ "tpope/vim-surround" },
 	{ "tpope/vim-rhubarb" },
 	{ "psliwka/vim-smoothie" },
-	{ "github/copilot.vim" },
+	--{ "github/copilot.vim" },
 	{
 		"stevearc/dressing.nvim",
 		opts = {},

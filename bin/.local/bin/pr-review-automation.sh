@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
 # PR Review Automation Tool
-# Checks for GitHub PRs requiring review, creates worktrees and tmux sessions,
-# runs Claude Code for review assistance, and sends macOS notifications.
+# Syncs PRs to Obsidian notes, creates worktrees and tmux sessions,
+# runs Claude Code for review assistance (only when needed), and sends macOS notifications.
 #
 
 set -euo pipefail
@@ -12,11 +12,12 @@ CONFIG_FILE="${HOME}/.config/pr-review/config.sh"
 PROJECT_SCRIPTS_DIR="${HOME}/.config/pr-review/project-scripts"
 STATE_DIR="${HOME}/.local/state/pr-review"
 LOG_FILE="${STATE_DIR}/pr-review.log"
+VAULT_PATH="${HOME}/obsidian-vault"
 
 # Defaults (can be overridden in config)
 WORK_DIR="${HOME}/work"
 CLAUDE_REVIEW_PROMPT="Review this PR for code quality, potential bugs, security issues, and suggest improvements"
-TERMINAL_APP="Terminal"
+TERMINAL_APP="iTerm"
 DRY_RUN=false
 VERBOSE=false
 
@@ -76,8 +77,13 @@ while [[ $# -gt 0 ]]; do
                     git -C "$repo_path" branch -D "$branch" &>/dev/null || true
                 done
             done
-            # Remove any leftover worktree directories
+            # Remove any leftover worktree directories (old structure: ~/work/*-pr-*)
             find "$WORK_DIR" -maxdepth 1 -type d -name "*-pr-*" 2>/dev/null | while read -r worktree; do
+                echo "  Removing directory: $worktree"
+                rm -rf "$worktree"
+            done
+            # Remove any leftover worktree directories (new structure: ~/work/*/pr-*)
+            find "$WORK_DIR" -maxdepth 2 -type d -name "pr-*" 2>/dev/null | while read -r worktree; do
                 echo "  Removing directory: $worktree"
                 rm -rf "$worktree"
             done
@@ -196,7 +202,196 @@ should_skip_repo() {
 get_prs_for_review() {
     local github_repo="$1"
 
-    gh pr list --repo "$github_repo" --search "review-requested:@me" --json number,headRefName,author --jq '.[] | "\(.number)|\(.headRefName)|\(.author.login)"' 2>/dev/null
+    gh pr list --repo "$github_repo" --search "review-requested:@me" --json number,headRefName,author --jq '.[] | "\(.number)|\(.headRefName)|\(.author.login)|review"' 2>/dev/null
+}
+
+# Get PRs authored by me for a repo
+get_authored_prs() {
+    local github_repo="$1"
+
+    gh pr list --repo "$github_repo" --author "@me" --state open --json number,headRefName,author --jq '.[] | "\(.number)|\(.headRefName)|\(.author.login)|authored"' 2>/dev/null
+}
+
+# Sync/create Obsidian note for a PR
+sync_obsidian_note() {
+    local github_repo="$1"
+    local pr_number="$2"
+    local branch="$3"
+    local author="$4"
+    local pr_type="$5"
+
+    local repo_name="${github_repo#*/}"
+    local note_dir="$VAULT_PATH/PRs"
+    [[ "$pr_type" == "authored" ]] && note_dir="$VAULT_PATH/PRs/authored"
+    [[ "$pr_type" == "review" ]] && note_dir="$VAULT_PATH/PRs/reviews"
+
+    mkdir -p "$note_dir"
+    local note_file="$note_dir/pr-${pr_number}.md"
+
+    # Get PR details from GitHub
+    local pr_json
+    pr_json=$(gh pr view "$pr_number" --repo "$github_repo" --json title,url,updatedAt,isDraft 2>/dev/null) || return 1
+
+    local title url updated draft
+    title=$(echo "$pr_json" | jq -r '.title')
+    url=$(echo "$pr_json" | jq -r '.url')
+    updated=$(echo "$pr_json" | jq -r '.updatedAt | split("T")[0]')
+    draft=$(echo "$pr_json" | jq -r '.isDraft')
+
+    if [[ ! -f "$note_file" ]]; then
+        log "INFO" "Creating Obsidian note: $note_file"
+
+        local draft_line=""
+        [[ "$draft" == "true" ]] && draft_line=$'\ndraft: true'
+
+        local author_line=""
+        [[ -n "$author" ]] && author_line=$'\nauthor: '"$author"
+
+        cat > "$note_file" << EOF
+---
+pr_number: $pr_number
+title: "$title"
+repo: $repo_name
+url: $url
+status: open${draft_line}
+type: $pr_type
+branch: $branch${author_line}
+created: $(date +%Y-%m-%d)
+updated: $updated
+claude_last_review:
+labels: []
+reviewers: []
+my_review_status: pending
+---
+
+# PR #$pr_number: $title
+
+## Quick Actions
+- [Open in GitHub]($url)
+
+## Summary
+
+## My Notes
+
+## Claude Sessions
+
+## Review Comments
+
+## Checklist
+- [ ] Code reviewed
+- [ ] Tests passing
+- [ ] Conflicts resolved
+- [ ] Ready to merge
+EOF
+    else
+        # Update existing note
+        sed -i '' "s/^updated: .*/updated: $updated/" "$note_file"
+        if [[ "$draft" == "true" ]]; then
+            grep -q "^draft:" "$note_file" || sed -i '' "/^status:/a\\
+draft: true" "$note_file"
+        else
+            sed -i '' "/^draft: true/d" "$note_file"
+        fi
+        log "INFO" "Updated Obsidian note: $note_file"
+    fi
+
+    echo "$note_file"
+}
+
+# Get the last commit date for a PR
+get_pr_last_commit_date() {
+    local github_repo="$1"
+    local pr_number="$2"
+
+    # Get the last commit date from the PR
+    local commit_date
+    commit_date=$(gh pr view "$pr_number" --repo "$github_repo" --json commits --jq '.commits[-1].committedDate' 2>/dev/null) || return 1
+
+    # Convert to timestamp for comparison
+    if [[ -n "$commit_date" ]]; then
+        date -j -f "%Y-%m-%dT%H:%M:%SZ" "$commit_date" "+%s" 2>/dev/null || \
+        date -j -f "%Y-%m-%dT%H:%M:%S" "${commit_date%Z}" "+%s" 2>/dev/null || \
+        echo "0"
+    else
+        echo "0"
+    fi
+}
+
+# Get the claude_last_review timestamp from Obsidian note
+get_claude_last_review() {
+    local note_file="$1"
+
+    if [[ ! -f "$note_file" ]]; then
+        echo "0"
+        return
+    fi
+
+    local review_date
+    review_date=$(grep "^claude_last_review:" "$note_file" | sed 's/^claude_last_review: *//')
+
+    if [[ -z "$review_date" || "$review_date" == "null" ]]; then
+        echo "0"
+        return
+    fi
+
+    # Convert to timestamp
+    date -j -f "%Y-%m-%dT%H:%M:%S" "$review_date" "+%s" 2>/dev/null || echo "0"
+}
+
+# Update claude_last_review in Obsidian note
+update_claude_review_timestamp() {
+    local note_file="$1"
+    local timestamp
+    timestamp=$(date "+%Y-%m-%dT%H:%M:%S")
+
+    if [[ -f "$note_file" ]]; then
+        # Check if field exists
+        if grep -q "^claude_last_review:" "$note_file"; then
+            sed -i '' "s/^claude_last_review:.*/claude_last_review: $timestamp/" "$note_file"
+        else
+            # Add field after updated: line
+            sed -i '' "/^updated:/a\\
+claude_last_review: $timestamp" "$note_file"
+        fi
+        log "INFO" "Updated claude_last_review in $note_file"
+    fi
+}
+
+# Append Claude review output to Obsidian note
+append_claude_review_to_note() {
+    local note_file="$1"
+    local review_output="$2"
+    local pr_number="$3"
+
+    if [[ ! -f "$note_file" ]]; then
+        log "WARN" "Note file not found: $note_file"
+        return 1
+    fi
+
+    # Use append-to-note.sh for consistent append behavior
+    echo "$review_output" | ~/scripts/append-to-note.sh "$note_file" "## Claude Sessions" -
+
+    log "INFO" "Appended Claude review to $note_file"
+}
+
+# Check if Claude review is needed (new commits since last review)
+needs_claude_review() {
+    local github_repo="$1"
+    local pr_number="$2"
+    local note_file="$3"
+
+    local last_commit_ts last_review_ts
+    last_commit_ts=$(get_pr_last_commit_date "$github_repo" "$pr_number")
+    last_review_ts=$(get_claude_last_review "$note_file")
+
+    log "INFO" "PR #${pr_number}: last_commit=$last_commit_ts, last_review=$last_review_ts"
+
+    # If never reviewed or new commits since last review
+    if [[ "$last_review_ts" == "0" ]] || [[ "$last_commit_ts" -gt "$last_review_ts" ]]; then
+        return 0  # true - needs review
+    fi
+
+    return 1  # false - no review needed
 }
 
 # Create worktree for PR
@@ -204,7 +399,22 @@ create_worktree() {
     local repo_path="$1"
     local pr_number="$2"
     local branch="$3"
-    local worktree_path="${repo_path}-pr-${pr_number}"
+    local repo_name
+    repo_name=$(basename "$repo_path")
+    # For repos in new structure (e.g., ~/work/i360/main), use parent dir
+    # For repos in old structure (e.g., ~/work/other-repo), use sibling
+    local parent_dir
+    parent_dir=$(dirname "$repo_path")
+    local parent_name
+    parent_name=$(basename "$parent_dir")
+    local worktree_path
+    if [[ "$repo_name" == "main" ]]; then
+        # New structure: ~/work/i360/main -> ~/work/i360/pr-{number}
+        worktree_path="${parent_dir}/pr-${pr_number}"
+    else
+        # Old structure: ~/work/repo -> ~/work/repo-pr-{number}
+        worktree_path="${repo_path}-pr-${pr_number}"
+    fi
 
     if [[ -d "$worktree_path" ]]; then
         log "INFO" "Worktree already exists: $worktree_path"
@@ -273,11 +483,14 @@ run_project_scripts() {
 }
 
 # Create tmux session for PR review
+# Returns: 0 = new session created, 1 = session already existed, 2 = new session but no claude needed
 create_tmux_session() {
     local session_name="$1"
     local worktree_path="$2"
     local github_repo="$3"
     local pr_number="$4"
+    local run_claude="$5"  # "true" or "false"
+    local note_file="$6"
 
     # Check if session already exists
     if tmux has-session -t "$session_name" 2>/dev/null; then
@@ -286,7 +499,7 @@ create_tmux_session() {
     fi
 
     if [[ "$DRY_RUN" == "true" ]]; then
-        log "INFO" "[DRY-RUN] Would create tmux session: $session_name"
+        log "INFO" "[DRY-RUN] Would create tmux session: $session_name (run_claude=$run_claude)"
         return 0
     fi
 
@@ -295,17 +508,30 @@ create_tmux_session() {
     # Create detached tmux session
     tmux new-session -d -s "$session_name" -c "$worktree_path"
 
+    # Wait for shell to initialize (nvm, etc.)
+    sleep 2
+
     # Explicitly cd into worktree (in case shell rc changes directory)
     tmux send-keys -t "$session_name" "cd '$worktree_path'" Enter
 
     # Run project-specific scripts in the session
     run_project_scripts "$github_repo" "$worktree_path"
 
-    # Start Claude Code with review prompt
-    local claude_cmd="claude \"/review-pr ${pr_number}\""
-    tmux send-keys -t "$session_name" "$claude_cmd" Enter
+    # Wait for cd to complete before sending claude command
+    sleep 1
 
-    return 0  # Return 0 to indicate new session was created
+    if [[ "$run_claude" == "true" ]]; then
+        # Run the review script that captures output and appends to note
+        tmux send-keys -t "$session_name" "~/scripts/run-claude-review.sh '${worktree_path}' '${pr_number}' '${note_file}'" Enter
+
+        # Update the Obsidian note with review timestamp
+        update_claude_review_timestamp "$note_file"
+
+        return 0  # Return 0 to indicate new session with claude
+    else
+        log "INFO" "Skipping Claude review (no new commits since last review)"
+        return 2  # Return 2 to indicate new session without claude
+    fi
 }
 
 # Send macOS notification
@@ -320,20 +546,6 @@ send_notification() {
         return 0
     fi
 
-    # Create AppleScript to attach to tmux session
-    local attach_script
-    attach_script=$(cat <<EOF
-tell application "${TERMINAL_APP}"
-    activate
-    do script "tmux attach -t ${session_name}"
-end tell
-EOF
-)
-
-    # Encode the script for terminal-notifier
-    local encoded_script
-    encoded_script=$(echo "$attach_script" | base64)
-
     # Create a temporary script to execute on click
     local click_script="${STATE_DIR}/open-${session_name}.sh"
     mkdir -p "$STATE_DIR"
@@ -341,7 +553,7 @@ EOF
 #!/usr/bin/env bash
 osascript -e 'tell application "${TERMINAL_APP}"
     activate
-    do script "tmux attach -t ${session_name}"
+    create window with default profile command "tmux attach -t ${session_name}"
 end tell'
 EOF
     chmod +x "$click_script"
@@ -384,20 +596,31 @@ process_repo() {
 
     log "INFO" "Processing repo: $github_repo"
 
-    # Get PRs requiring review
-    local prs
-    prs=$(get_prs_for_review "$github_repo")
+    # Get PRs requiring review and authored PRs
+    local review_prs authored_prs all_prs
+    review_prs=$(get_prs_for_review "$github_repo")
+    authored_prs=$(get_authored_prs "$github_repo")
 
-    if [[ -z "$prs" ]]; then
-        log "INFO" "No PRs requiring review in $github_repo"
+    # Combine both lists (authored PRs may overlap with review PRs, dedup by PR number)
+    all_prs=$(echo -e "${review_prs}\n${authored_prs}" | sort -t'|' -k1,1 -u | grep -v '^$' || true)
+
+    if [[ -z "$all_prs" ]]; then
+        log "INFO" "No PRs to process in $github_repo"
         return 0
     fi
 
     # Process each PR
-    while IFS='|' read -r pr_number branch author; do
+    while IFS='|' read -r pr_number branch author pr_type; do
         [[ -z "$pr_number" ]] && continue
 
-        log "INFO" "Found PR #${pr_number} by @${author} (branch: $branch)"
+        log "INFO" "Found PR #${pr_number} by @${author} (branch: $branch, type: $pr_type)"
+
+        # Sync/create Obsidian note
+        local note_file
+        note_file=$(sync_obsidian_note "$github_repo" "$pr_number" "$branch" "$author" "$pr_type") || {
+            log "WARN" "Failed to sync Obsidian note for PR #${pr_number}"
+            continue
+        }
 
         # Create session name: owner-repo-pr-number
         local session_name="${github_repo//\//-}-pr-${pr_number}"
@@ -406,17 +629,53 @@ process_repo() {
         local worktree_path
         worktree_path=$(create_worktree "$repo_path" "$pr_number" "$branch") || continue
 
-        # Create tmux session (returns 0 if new, 1 if existing)
-        if create_tmux_session "$session_name" "$worktree_path" "$github_repo" "$pr_number"; then
-            # Only send notification for newly created sessions
-            send_notification \
-                "PR Review Ready" \
-                "@${author} requires your review" \
-                "${github_repo} #${pr_number}" \
-                "$session_name"
+        # Check if Claude review is needed
+        local run_claude="false"
+        if needs_claude_review "$github_repo" "$pr_number" "$note_file"; then
+            run_claude="true"
+            log "INFO" "Claude review needed for PR #${pr_number} (new commits)"
+        else
+            log "INFO" "Claude review not needed for PR #${pr_number} (no new commits)"
         fi
 
-    done <<< "$prs"
+        # Create tmux session (returns 0 if new with claude, 1 if existing, 2 if new without claude)
+        local session_result=0
+        create_tmux_session "$session_name" "$worktree_path" "$github_repo" "$pr_number" "$run_claude" "$note_file" || session_result=$?
+
+        if [[ $session_result -eq 0 ]]; then
+            # New session with Claude review
+            if [[ "$pr_type" == "review" ]]; then
+                send_notification \
+                    "PR Review Ready" \
+                    "@${author} requires your review (Claude reviewing)" \
+                    "${github_repo} #${pr_number}" \
+                    "$session_name"
+            else
+                send_notification \
+                    "PR Session Ready" \
+                    "Your PR #${pr_number} is ready (Claude reviewing)" \
+                    "${github_repo}" \
+                    "$session_name"
+            fi
+        elif [[ $session_result -eq 2 ]]; then
+            # New session without Claude review
+            if [[ "$pr_type" == "review" ]]; then
+                send_notification \
+                    "PR Review Ready" \
+                    "@${author} requires your review" \
+                    "${github_repo} #${pr_number}" \
+                    "$session_name"
+            else
+                send_notification \
+                    "PR Session Ready" \
+                    "Your PR #${pr_number} is ready" \
+                    "${github_repo}" \
+                    "$session_name"
+            fi
+        fi
+        # session_result == 1 means session already existed, no notification
+
+    done <<< "$all_prs"
 }
 
 # Main function
@@ -435,8 +694,22 @@ main() {
     # Process each directory in WORK_DIR
     for repo_path in "$WORK_DIR"/*/; do
         [[ -d "$repo_path" ]] || continue
-        process_repo "${repo_path%/}"
+        repo_path="${repo_path%/}"
+
+        # Check for new structure: ~/work/repo/main/
+        if [[ -d "${repo_path}/main/.git" ]]; then
+            process_repo "${repo_path}/main"
+        elif [[ -d "${repo_path}/.git" ]]; then
+            # Old structure: ~/work/repo/
+            process_repo "$repo_path"
+        fi
     done
+
+    # Sync Obsidian notes with GitHub PR status
+    log "INFO" "Syncing Obsidian notes with GitHub..."
+    if [[ -x "${HOME}/scripts/sync-prs-to-obsidian.sh" ]]; then
+        "${HOME}/scripts/sync-prs-to-obsidian.sh" >/dev/null 2>&1 || log "WARN" "PR sync script failed"
+    fi
 
     log "INFO" "PR review automation complete"
 }
