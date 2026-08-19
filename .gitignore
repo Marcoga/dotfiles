@@ -44,3 +44,11 @@ log
 configstore/
 packer_compiled.lua
 
+
+# machine-local / secrets (these live in $HOME, listed here defensively)
+.secrets
+.zshrc.local
+.gitconfig.local
+# stow must never pull these into the repo
+.local/share/
+.local/state/

@@ -1,6 +1,6 @@
 # Neovim Configuration
 
-Config: `~/.config/nvim/` (stowed from `~/dotfiles/.config/nvim/`)
+Config: `~/.config/nvim/` (stowed from `~/dotfiles/nvim/.config/nvim/`)
 
 ## Architecture
 

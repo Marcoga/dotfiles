@@ -24,5 +24,6 @@
 	rebase = false
 [push]
 	autoSetupRemote = true
-[maintenance]
-	repo = /Users/mgarcia/work/i360
+[include]
+	# machine-specific settings (maintenance repos, credential helpers, signing keys)
+	path = ~/.gitconfig.local

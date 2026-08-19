@@ -5,21 +5,11 @@ Documentation for the integrated development environment: tmux + zsh + nvim + Ob
 ## Quick Start
 
 ```bash
-# Install dotfiles
-cd ~/dotfiles
-./install
-
-# Dependencies
-brew install neovim tmux fzf ripgrep fd lazygit gh gitmux terminal-notifier
-
-# oh-my-zsh
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-# zsh plugins
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-git clone https://github.com/lukechilds/zsh-nvm ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-nvm
+git clone https://github.com/Marcoga/dotfiles.git ~/dotfiles
+~/dotfiles/install.sh     # macOS or Debian/Ubuntu: tools, oh-my-zsh + plugins, nvm, stow, nvim plugins
 ```
+
+See the top-level [README](../../README.md) for flags and the rules that keep the stow layout healthy.
 
 ## Architecture
 
@@ -108,12 +98,12 @@ Key scripts:
 ```
 ~/
 ├── dotfiles/           # This repo (stow-managed)
-│   ├── .config/nvim/   # Neovim config
+│   ├── nvim/.config/nvim/ # Neovim config
 │   ├── tmux/           # Tmux config
 │   ├── zsh/            # Zsh config
 │   ├── git/            # Git config
 │   ├── bin/.local/bin/ # Scripts
-│   └── my-setup/       # This documentation
+│   └── docs/my-setup/  # This documentation
 ├── scripts/            # Additional scripts
 ├── obsidian-vault/     # Knowledge base
 │   ├── PRs/            # PR tracking
@@ -137,5 +127,5 @@ stow bin config git launchd tmux zsh
 Or use the install script:
 
 ```bash
-./install
+./install.sh
 ```

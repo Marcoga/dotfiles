@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# dotfiles-doctor — print the state of the dotfiles installation on this machine.
+# Green = linked/installed, yellow = missing optional, red = wrong.
+DOTFILES="${DOTFILES:-$HOME/dotfiles}"
+ok()   { printf '  \033[32m✔\033[0m %s\n' "$*"; }
+miss() { printf '  \033[33m•\033[0m %s\n' "$*"; }
+bad()  { printf '  \033[31m✘\033[0m %s\n' "$*"; STATUS=1; }
+STATUS=0
+
+echo "dotfiles doctor — $(hostname) ($(uname -s) $(uname -m)), repo: $DOTFILES"
+if [[ -d "$DOTFILES/.git" ]]; then
+  echo "  branch $(git -C "$DOTFILES" rev-parse --abbrev-ref HEAD) @ $(git -C "$DOTFILES" rev-parse --short HEAD)$(git -C "$DOTFILES" status --porcelain | grep -q . && echo ' (dirty)')"
+fi
+
+echo "links:"
+check_link() {  # check_link <home-relative path> <expected repo-relative target prefix>
+  local p="$HOME/$1" want="$2"
+  if [[ -L "$p" ]]; then
+    local real; real="$(cd "$(dirname "$p")" && cd "$(dirname "$(readlink "$p")")" 2>/dev/null && pwd -P)/$(basename "$(readlink "$p")")"
+    if [[ "$real" == "$(cd "$DOTFILES" && pwd -P)/$want"* ]]; then ok "~/$1 -> $want"; else bad "~/$1 -> $(readlink "$p") (expected into $want)"; fi
+  elif [[ -e "$p" ]]; then bad "~/$1 is a real file/dir, not a symlink into the repo"
+  else bad "~/$1 missing"; fi
+}
+check_link .zshrc zsh/.zshrc
+check_link .tmux.conf tmux/.tmux.conf
+check_link .gitconfig git/.gitconfig
+check_link .config/nvim nvim/.config/nvim
+check_link .local/bin/tmux-sessionizer bin/.local/bin/tmux-sessionizer
+check_link .config/pr-review/config.sh config/.config/pr-review/config.sh
+for d in .local .config .local/share .local/bin; do
+  [[ -L "$HOME/$d" ]] && bad "~/$d is a symlink ($(readlink "$HOME/$d")) — root-level stow damage, run bootstrap/migrate-from-rootstow.sh"
+done
+for d in bin zsh tmux git nvim config launchd install ubuntu; do
+  [[ -L "$HOME/$d" && "$(readlink "$HOME/$d")" == dotfiles/* ]] && bad "~/$d -> $(readlink "$HOME/$d") — stray root-level stow symlink"
+done
+
+echo "tools:"
+for t in zsh git stow tmux nvim fzf rg fd lazygit gitmux gh node; do
+  if command -v "$t" >/dev/null 2>&1; then ok "$t $(case $t in nvim) nvim --version | head -1 | sed 's/NVIM //';; tmux) tmux -V | cut -d' ' -f2;; node) node --version;; *) ;; esac)"
+  else case $t in gitmux|gh|lazygit|fd) miss "$t not installed (optional)";; *) bad "$t not installed";; esac; fi
+done
+if [[ -x "$HOME/.deno/bin/deno" ]] || command -v deno >/dev/null 2>&1; then ok "deno (peek.nvim)"; else miss "deno not installed (only peek.nvim needs it)"; fi
+
+echo "shell:"
+[[ -d "$HOME/.oh-my-zsh" ]] && ok "oh-my-zsh" || bad "oh-my-zsh missing"
+ZC="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+for p in zsh-autosuggestions zsh-syntax-highlighting zsh-nvm; do
+  [[ -d "$ZC/plugins/$p" ]] && ok "plugin $p" || bad "plugin $p missing ($ZC/plugins)"
+done
+[[ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ]] && ok "nvm" || bad "nvm missing"
+if [[ "$(uname -s)" == Darwin ]]; then sh="$(dscl . -read "/Users/$USER" UserShell 2>/dev/null | awk '{print $2}')"; else sh="$(getent passwd "$USER" | cut -d: -f7)"; fi
+[[ "$sh" == *zsh ]] && ok "login shell $sh" || bad "login shell is $sh (want zsh)"
+for f in .secrets .zshrc.local .gitconfig.local; do [[ -f "$HOME/$f" ]] && ok "~/$f present" || miss "~/$f absent (created by install.sh)"; done
+if [[ -L "$HOME/.zshrc" ]] && ! grep -q 'managed by ~/dotfiles' "$HOME/.zshrc" 2>/dev/null; then bad "~/.zshrc content is not ours (overwritten by an installer?) — git -C $DOTFILES diff zsh/.zshrc"; fi
+
+echo "nvim:"
+if command -v nvim >/dev/null 2>&1; then
+  n="$(ls "$HOME/.local/share/nvim/lazy" 2>/dev/null | wc -l | tr -d ' ')"
+  [[ "$n" -gt 0 ]] && ok "$n lazy.nvim plugins installed" || miss "no plugins installed yet (install.sh runs Lazy! sync)"
+  m="$(ls "$HOME/.local/share/nvim/mason/bin" 2>/dev/null | tr '\n' ' ')"
+  [[ -n "$m" ]] && ok "mason: $m" || miss "mason tools not installed yet"
+  if out="$(nvim --headless "+lua print('ok')" +qa 2>&1)"; then ok "headless start clean"; else bad "headless start errors:"; echo "$out" | sed 's/^/      /' | head -8; fi
+fi
+echo "fonts:"
+if [[ "$(uname -s)" == Darwin ]]; then
+  ls ~/Library/Fonts /Library/Fonts 2>/dev/null | grep -qi "NerdFont" && ok "nerd font installed" || miss "no Nerd Font in ~/Library/Fonts (brew bundle installs FiraCode/JetBrains Mono NF)"
+else
+  fc-list 2>/dev/null | grep -qi "nerd" && ok "nerd font installed" || miss "no Nerd Font (install.sh puts FiraCode NF in ~/.local/share/fonts)"
+fi
+exit $STATUS

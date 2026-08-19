@@ -1,0 +1,27 @@
+# Homebrew bundle for the dotfiles toolchain (macOS). `brew bundle --file bootstrap/Brewfile`
+# Core
+brew "git"
+brew "git-lfs"
+brew "stow"
+brew "zsh"
+brew "tmux"
+brew "neovim"
+brew "fzf"
+brew "ripgrep"
+brew "fd"
+brew "lazygit"
+brew "gitmux"          # git status in the tmux status bar
+brew "gh"              # octo.nvim, pr scripts
+brew "jq"
+brew "deno"            # peek.nvim (markdown preview)
+brew "make"
+# Useful extras
+brew "htop"
+brew "tldr"
+brew "bat"
+brew "tree-sitter"
+# Fonts (nvim uses nerd-font glyphs: vim.g.have_nerd_font = true)
+cask "font-fira-code-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
+# Terminal
+cask "iterm2"

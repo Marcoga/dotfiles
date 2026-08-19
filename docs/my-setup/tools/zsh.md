@@ -55,8 +55,8 @@ MODE_INDICATOR="%F{yellow}+%f"
 ### Claude Code Usage
 | Alias | Command |
 |-------|---------|
-| `ccusage` | `~/scripts/claude-usage.sh` |
-| `ccusage-update` | `~/scripts/claude-usage-obsidian.sh` |
+| `claude-usage` | `~/scripts/claude-usage.sh` |
+| `claude-usage-update` | `~/scripts/claude-usage-obsidian.sh` |
 
 ### Git (project-specific)
 | Alias | Command |
