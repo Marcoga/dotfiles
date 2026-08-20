@@ -107,3 +107,25 @@ autocmd({ "BufWritePre" }, {
 	pattern = "*",
 	command = [[%s/\s\+$//e]],
 })
+
+-- Re-stat open buffers, so the `autoread` set above can actually fire.
+--
+-- This matters because of who else edits these files: headless agents write into the same
+-- checkouts, often while a buffer is open on the very same file. Two settings above remove
+-- every warning Neovim would otherwise give about that — `swapfile = false` deletes the
+-- "another program may be editing this file" prompt, and `autoread` only acts on a re-stat,
+-- which Neovim does on BufEnter or a shell return and NOT on an idle window. Without this
+-- line the sequence is: agent writes, the buffer keeps the stale text, `:w` overwrites the
+-- agent's work, and neither side is told.
+--
+-- CursorHold makes it feel automatic (`updatetime = 50` above is that timer), FocusGained
+-- catches tabbing back in from another window, and `checktime` is what turns the W11/W12/W16
+-- warnings back on for a buffer that has unsaved changes of its own.
+--
+-- The undo button for when it happens anyway: `undofile = true` is on, and undo history is
+-- keyed to the path and survives a reload — `:earlier 1f` gets your version back.
+autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
+	group = MarcogaGroup,
+	pattern = "*",
+	command = "checktime",
+})
