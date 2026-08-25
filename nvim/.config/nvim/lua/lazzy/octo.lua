@@ -24,5 +24,10 @@ return {
 		--{ "<leader>gp", "<cmd>Octo pr list<cr>", desc = "List pull requests" },
 		--{ "<leader>gc", "<cmd>Octo commands<cr>", desc = "Show commands" },
 		{ "<leader>P", "<cmd>Octo<cr>", desc = "Quick pick" },
+		-- GitHub's "Files changed" tab: changed-file panel + side-by-side diff of
+		-- base...head. Bare ":Octo review" resolves the PR from the current octo
+		-- buffer, else from the checked-out branch, and RESUMES a pending review
+		-- (keeping unsubmitted comments) instead of starting a fresh one.
+		{ "<leader>p", "<cmd>Octo review<cr>", desc = "PR diff (Files changed)" },
 	},
 }
