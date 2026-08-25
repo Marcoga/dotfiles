@@ -10,6 +10,7 @@ return {
 	{
 		"oxfist/night-owl.nvim",
 		lazy = false,
+		priority = 1000, -- the active colorscheme must load before every other start plugin
 		config = function()
 			require("night-owl").setup()
 			vim.cmd.colorscheme("night-owl")
@@ -60,7 +61,11 @@ return {
 				},
 			})
 
-			ColorMyPencils()
+			-- Deliberately NOT calling ColorMyPencils() here. rose-pine is a start
+			-- plugin, so this config ran at startup and set the colorscheme to
+			-- rose-pine-moon -- racing night-owl above. Whichever config lazy happened
+			-- to run last won, so the theme differed BETWEEN RUNS on the same machine.
+			-- Call ColorMyPencils("rose-pine-moon") by hand to switch.
 		end,
 	},
 	{
