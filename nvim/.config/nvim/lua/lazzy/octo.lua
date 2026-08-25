@@ -11,7 +11,13 @@ return {
 	-- ":Octo search ..." keymaps in keymaps.lua fail with E492.
 	cmd = "Octo",
 	config = function()
-		require("octo").setup({ enable_builtin = true })
+		require("octo").setup({
+			enable_builtin = true,
+			-- The runner's i360 worktrees fetch from the mini's bare repo over git://,
+			-- so "origin" is not a GitHub URL there and octo resolves the wrong host.
+			-- A "github" remote is added on that box; prefer it when present.
+			default_remote = { "github", "upstream", "origin" },
+		})
 	end,
 	keys = {
 		--{ "<leader>pl", "<cmd>Octo issue list<cr>", desc = "List issues" },
