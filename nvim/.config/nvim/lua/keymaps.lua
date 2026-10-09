@@ -126,5 +126,4 @@ vim.keymap.set(
 	{ noremap = true, silent = true }
 )
 
--- Create a proper Prettier command with LSP formatting
-vim.cmd([[command! -nargs=0 Prettier lua vim.lsp.buf.format({ async = true })]])
+-- :Prettier is defined in lua/lazzy/conform.lua

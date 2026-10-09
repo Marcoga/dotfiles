@@ -1,3 +1,7 @@
+-- Prettier = the files i360's pre-commit hook formats (utils/config/.lintstagedrc.js):
+-- *.{ts,tsx} and *.{js,jsx,json,mjs,less,css,html}.
+local prettier = { "prettierd", "prettier", stop_after_first = true }
+
 return {
 	"stevearc/conform.nvim",
 	opts = {},
@@ -5,9 +9,15 @@ return {
 		require("conform").setup({
 			formatters_by_ft = {
 				lua = { "stylua" },
-				javascript = { "prettierd", "prettier", stop_after_first = true },
-				typescript = { "prettierd", "prettier", stop_after_first = true },
-				typescriptreact = { "prettierd", "prettier", stop_after_first = true },
+				javascript = prettier,
+				javascriptreact = prettier,
+				typescript = prettier,
+				typescriptreact = prettier,
+				json = prettier,
+				jsonc = prettier,
+				css = prettier,
+				less = prettier,
+				html = prettier,
 				sh = { "shfmt" },
 			},
 			format_on_save = {
@@ -16,5 +26,10 @@ return {
 				lsp_format = "fallback",
 			},
 		})
+
+		-- Format with Prettier, not with whatever LSP is attached (the TS 7 server formats too, differently).
+		vim.api.nvim_create_user_command("Prettier", function()
+			require("conform").format({ async = true, lsp_format = "never" })
+		end, { desc = "Format the buffer with prettierd/prettier" })
 	end,
 }
